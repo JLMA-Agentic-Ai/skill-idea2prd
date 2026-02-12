@@ -1,0 +1,289 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schemas.example.com/idea-to-prd/idea-input.schema.json",
+  "title": "Idea Input Schema",
+  "description": "Schema for validating idea-to-PRD skill input parameters",
+  "type": "object",
+  "properties": {
+    "idea": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 10000,
+      "pattern": "^[\\w\\s\\.,!?\\-():/]+$",
+      "description": "The core product idea or problem statement"
+    },
+    "stakeholders": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 50,
+        "pattern": "^[A-Za-z][A-Za-z\\s\\-]+$"
+      },
+      "maxItems": 20,
+      "uniqueItems": true,
+      "description": "List of stakeholder roles or departments"
+    },
+    "includeMarketResearch": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether to include automated market research"
+    },
+    "securityLevel": {
+      "type": "string",
+      "enum": ["low", "medium", "high", "critical"],
+      "default": "medium",
+      "description": "Security requirements level"
+    },
+    "outputFormat": {
+      "type": "string",
+      "enum": ["summary", "comprehensive", "technical", "executive"],
+      "default": "comprehensive",
+      "description": "Desired output format and detail level"
+    },
+    "mode": {
+      "type": "string",
+      "enum": ["auto", "manual", "guided"],
+      "default": "auto",
+      "description": "Processing mode with manual checkpoints"
+    },
+    "industry": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 100,
+      "pattern": "^[A-Za-z][A-Za-z\\s&\\-]+$",
+      "description": "Target industry or business domain"
+    },
+    "targetAudience": {
+      "type": "object",
+      "properties": {
+        "primary": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 200,
+          "description": "Primary target audience description"
+        },
+        "secondary": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 200,
+          "description": "Secondary target audience description"
+        },
+        "demographics": {
+          "type": "object",
+          "properties": {
+            "ageRange": {
+              "type": "string",
+              "pattern": "^\\d{1,2}-\\d{1,2}$",
+              "description": "Age range in format XX-XX"
+            },
+            "geographicScope": {
+              "type": "string",
+              "enum": ["local", "regional", "national", "international", "global"],
+              "description": "Geographic target scope"
+            },
+            "technicalProficiency": {
+              "type": "string",
+              "enum": ["beginner", "intermediate", "advanced", "expert"],
+              "description": "Technical skill level of target audience"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "businessModel": {
+      "type": "string",
+      "enum": ["B2B", "B2C", "B2B2C", "C2C", "marketplace", "subscription", "freemium", "enterprise"],
+      "description": "Primary business model"
+    },
+    "timeline": {
+      "type": "object",
+      "properties": {
+        "mvpTarget": {
+          "type": "string",
+          "pattern": "^\\d{1,2}\\s(weeks?|months?)$",
+          "description": "MVP delivery timeline"
+        },
+        "fullRelease": {
+          "type": "string",
+          "pattern": "^\\d{1,2}\\s(months?|years?)$",
+          "description": "Full product release timeline"
+        }
+      },
+      "additionalProperties": false
+    },
+    "constraints": {
+      "type": "object",
+      "properties": {
+        "budget": {
+          "type": "string",
+          "pattern": "^[\\$€£]?\\d{1,9}(\\.[\\d]{2})?[KkMm]?$",
+          "description": "Budget constraints"
+        },
+        "technology": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 50
+          },
+          "maxItems": 10,
+          "description": "Technology stack constraints"
+        },
+        "compliance": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["GDPR", "HIPAA", "SOX", "PCI-DSS", "ISO27001", "SOC2", "CCPA", "FERPA"]
+          },
+          "maxItems": 10,
+          "description": "Compliance requirements"
+        },
+        "performance": {
+          "type": "object",
+          "properties": {
+            "responseTime": {
+              "type": "string",
+              "pattern": "^\\d+ms|\\d+\\.\\d+s$",
+              "description": "Maximum response time requirement"
+            },
+            "concurrentUsers": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 10000000,
+              "description": "Peak concurrent users"
+            },
+            "availability": {
+              "type": "string",
+              "pattern": "^\\d{2}\\.\\d{1,3}%$",
+              "description": "Availability requirement (e.g., 99.9%)"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "existingAssets": {
+      "type": "object",
+      "properties": {
+        "codebase": {
+          "type": "boolean",
+          "description": "Existing codebase to build upon"
+        },
+        "infrastructure": {
+          "type": "boolean",
+          "description": "Existing infrastructure to leverage"
+        },
+        "team": {
+          "type": "object",
+          "properties": {
+            "size": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1000,
+              "description": "Current team size"
+            },
+            "skills": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 2,
+                "maxLength": 50
+              },
+              "maxItems": 20,
+              "description": "Existing team skills"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "riskTolerance": {
+      "type": "string",
+      "enum": ["low", "medium", "high"],
+      "default": "medium",
+      "description": "Risk tolerance level for the project"
+    },
+    "competitiveAnalysis": {
+      "type": "object",
+      "properties": {
+        "competitors": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 100
+          },
+          "maxItems": 10,
+          "description": "Known competitors"
+        },
+        "differentiators": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 200
+          },
+          "maxItems": 10,
+          "description": "Key differentiators from competition"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "required": ["idea"],
+  "additionalProperties": false,
+  "security": {
+    "sanitizationRules": {
+      "idea": {
+        "stripTags": true,
+        "encodeHtml": true,
+        "maxLength": 10000,
+        "allowedChars": "alphanumeric,space,punctuation"
+      },
+      "stakeholders": {
+        "stripTags": true,
+        "encodeHtml": true,
+        "normalizeCase": "title"
+      }
+    },
+    "validationLevel": "strict",
+    "contentFiltering": {
+      "piiDetection": true,
+      "sensitiveDataMasking": true,
+      "profanityFilter": true
+    }
+  },
+  "examples": [
+    {
+      "idea": "AI-powered task management app for remote teams",
+      "stakeholders": ["Product", "Engineering", "Design"],
+      "includeMarketResearch": true,
+      "securityLevel": "high",
+      "outputFormat": "comprehensive",
+      "industry": "Software & Technology",
+      "businessModel": "B2B",
+      "timeline": {
+        "mvpTarget": "3 months",
+        "fullRelease": "8 months"
+      }
+    },
+    {
+      "idea": "Decentralized identity verification platform",
+      "stakeholders": ["Security", "Legal", "Business Development"],
+      "securityLevel": "critical",
+      "outputFormat": "technical",
+      "constraints": {
+        "compliance": ["GDPR", "SOC2"],
+        "performance": {
+          "responseTime": "100ms",
+          "availability": "99.99%"
+        }
+      }
+    }
+  ]
+}

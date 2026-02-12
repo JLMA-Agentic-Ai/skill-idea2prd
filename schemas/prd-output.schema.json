@@ -1,0 +1,866 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schemas.example.com/idea-to-prd/prd-output.schema.json",
+  "title": "PRD Output Schema",
+  "description": "Schema for validating Product Requirements Document output from idea-to-prd skill",
+  "type": "object",
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$",
+          "description": "Semantic version of the PRD"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp of generation"
+        },
+        "skillVersion": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$",
+          "description": "Version of the idea-to-prd skill used"
+        },
+        "processingTimeMs": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Processing time in milliseconds"
+        },
+        "securityClassification": {
+          "type": "string",
+          "enum": ["public", "internal", "confidential", "restricted"],
+          "description": "Security classification of the document"
+        },
+        "hash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$",
+          "description": "SHA-256 hash of the document content"
+        }
+      },
+      "required": ["version", "generatedAt", "skillVersion"],
+      "additionalProperties": false
+    },
+    "executiveSummary": {
+      "type": "object",
+      "properties": {
+        "problemStatement": {
+          "type": "string",
+          "minLength": 50,
+          "maxLength": 1000,
+          "description": "Clear problem statement"
+        },
+        "solutionOverview": {
+          "type": "string",
+          "minLength": 50,
+          "maxLength": 1000,
+          "description": "High-level solution description"
+        },
+        "businessImpact": {
+          "type": "string",
+          "minLength": 30,
+          "maxLength": 500,
+          "description": "Expected business impact"
+        },
+        "keyMetrics": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "metric": {
+                "type": "string",
+                "minLength": 5,
+                "maxLength": 100
+              },
+              "target": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 50
+              },
+              "timeframe": {
+                "type": "string",
+                "minLength": 5,
+                "maxLength": 50
+              }
+            },
+            "required": ["metric", "target"],
+            "additionalProperties": false
+          },
+          "minItems": 1,
+          "maxItems": 10
+        }
+      },
+      "required": ["problemStatement", "solutionOverview", "businessImpact"],
+      "additionalProperties": false
+    },
+    "productVision": {
+      "type": "object",
+      "properties": {
+        "visionStatement": {
+          "type": "string",
+          "minLength": 20,
+          "maxLength": 300,
+          "description": "Product vision statement"
+        },
+        "strategicObjectives": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "objective": {
+                "type": "string",
+                "minLength": 10,
+                "maxLength": 200
+              },
+              "priority": {
+                "type": "string",
+                "enum": ["high", "medium", "low"]
+              },
+              "successCriteria": {
+                "type": "string",
+                "minLength": 10,
+                "maxLength": 300
+              }
+            },
+            "required": ["objective", "priority"],
+            "additionalProperties": false
+          },
+          "minItems": 1,
+          "maxItems": 10
+        },
+        "targetMarket": {
+          "type": "object",
+          "properties": {
+            "primarySegment": {
+              "type": "string",
+              "minLength": 10,
+              "maxLength": 200
+            },
+            "marketSize": {
+              "type": "string",
+              "pattern": "^[\\$€£]?\\d{1,9}(\\.[\\d]{2})?[KkMmBbTt]?$"
+            },
+            "growthRate": {
+              "type": "string",
+              "pattern": "^\\d{1,2}(\\.\\d)?%$"
+            }
+          },
+          "required": ["primarySegment"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["visionStatement"],
+      "additionalProperties": false
+    },
+    "userResearch": {
+      "type": "object",
+      "properties": {
+        "personas": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 2,
+                "maxLength": 100
+              },
+              "role": {
+                "type": "string",
+                "minLength": 5,
+                "maxLength": 100
+              },
+              "goals": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 10,
+                  "maxLength": 200
+                },
+                "minItems": 1,
+                "maxItems": 10
+              },
+              "painPoints": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 10,
+                  "maxLength": 200
+                },
+                "minItems": 1,
+                "maxItems": 10
+              },
+              "technicalProficiency": {
+                "type": "string",
+                "enum": ["beginner", "intermediate", "advanced", "expert"]
+              }
+            },
+            "required": ["name", "role", "goals", "painPoints"],
+            "additionalProperties": false
+          },
+          "minItems": 1,
+          "maxItems": 5
+        },
+        "userJourneyMap": {
+          "type": "string",
+          "minLength": 100,
+          "maxLength": 2000,
+          "description": "User journey mapping description"
+        }
+      },
+      "required": ["personas"],
+      "additionalProperties": false
+    },
+    "functionalRequirements": {
+      "type": "object",
+      "properties": {
+        "coreFeatures": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^F\\d{3}$",
+                "description": "Feature ID (e.g., F001)"
+              },
+              "title": {
+                "type": "string",
+                "minLength": 5,
+                "maxLength": 100
+              },
+              "description": {
+                "type": "string",
+                "minLength": 20,
+                "maxLength": 500
+              },
+              "priority": {
+                "type": "string",
+                "enum": ["P0", "P1", "P2", "P3"]
+              },
+              "complexity": {
+                "type": "string",
+                "enum": ["Low", "Medium", "High"]
+              },
+              "acceptanceCriteria": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 10,
+                  "maxLength": 200
+                },
+                "minItems": 1,
+                "maxItems": 10
+              },
+              "dependencies": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^F\\d{3}$"
+                },
+                "maxItems": 10
+              }
+            },
+            "required": ["id", "title", "description", "priority", "complexity", "acceptanceCriteria"],
+            "additionalProperties": false
+          },
+          "minItems": 1,
+          "maxItems": 50
+        },
+        "userStories": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^US\\d{3}$",
+                "description": "User Story ID (e.g., US001)"
+              },
+              "title": {
+                "type": "string",
+                "minLength": 10,
+                "maxLength": 100
+              },
+              "asA": {
+                "type": "string",
+                "minLength": 5,
+                "maxLength": 100
+              },
+              "iWant": {
+                "type": "string",
+                "minLength": 10,
+                "maxLength": 200
+              },
+              "soThat": {
+                "type": "string",
+                "minLength": 10,
+                "maxLength": 200
+              },
+              "acceptanceCriteria": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 10,
+                  "maxLength": 200
+                },
+                "minItems": 1,
+                "maxItems": 10
+              },
+              "priority": {
+                "type": "string",
+                "enum": ["Must Have", "Should Have", "Could Have", "Won't Have"]
+              },
+              "storyPoints": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 13
+              }
+            },
+            "required": ["id", "title", "asA", "iWant", "soThat", "acceptanceCriteria", "priority"],
+            "additionalProperties": false
+          },
+          "minItems": 1,
+          "maxItems": 100
+        }
+      },
+      "required": ["coreFeatures"],
+      "additionalProperties": false
+    },
+    "nonFunctionalRequirements": {
+      "type": "object",
+      "properties": {
+        "performance": {
+          "type": "object",
+          "properties": {
+            "responseTime": {
+              "type": "string",
+              "pattern": "^\\d+ms|\\d+\\.\\d+s$"
+            },
+            "throughput": {
+              "type": "string",
+              "pattern": "^\\d+(/second|/minute|/hour)$"
+            },
+            "concurrentUsers": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "security": {
+          "type": "object",
+          "properties": {
+            "authenticationMethod": {
+              "type": "string",
+              "minLength": 5,
+              "maxLength": 100
+            },
+            "authorizationModel": {
+              "type": "string",
+              "minLength": 5,
+              "maxLength": 100
+            },
+            "encryptionLevel": {
+              "type": "string",
+              "enum": ["AES-128", "AES-256", "RSA-2048", "RSA-4096"]
+            },
+            "complianceRequirements": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["GDPR", "HIPAA", "SOX", "PCI-DSS", "ISO27001", "SOC2", "CCPA", "FERPA"]
+              },
+              "uniqueItems": true
+            }
+          },
+          "additionalProperties": false
+        },
+        "availability": {
+          "type": "object",
+          "properties": {
+            "uptimeTarget": {
+              "type": "string",
+              "pattern": "^\\d{2}\\.\\d{1,3}%$"
+            },
+            "rto": {
+              "type": "string",
+              "pattern": "^\\d+\\s(minutes?|hours?)$"
+            },
+            "rpo": {
+              "type": "string",
+              "pattern": "^\\d+\\s(minutes?|hours?)$"
+            }
+          },
+          "additionalProperties": false
+        },
+        "scalability": {
+          "type": "object",
+          "properties": {
+            "horizontalScaling": {
+              "type": "boolean"
+            },
+            "verticalScaling": {
+              "type": "boolean"
+            },
+            "autoScaling": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "technicalArchitecture": {
+      "type": "object",
+      "properties": {
+        "systemArchitecture": {
+          "type": "string",
+          "minLength": 100,
+          "maxLength": 2000
+        },
+        "technologyStack": {
+          "type": "object",
+          "properties": {
+            "frontend": {
+              "type": "object",
+              "properties": {
+                "framework": {
+                  "type": "string",
+                  "minLength": 2,
+                  "maxLength": 50
+                },
+                "uiLibrary": {
+                  "type": "string",
+                  "minLength": 2,
+                  "maxLength": 50
+                },
+                "stateManagement": {
+                  "type": "string",
+                  "minLength": 2,
+                  "maxLength": 50
+                }
+              },
+              "additionalProperties": false
+            },
+            "backend": {
+              "type": "object",
+              "properties": {
+                "runtime": {
+                  "type": "string",
+                  "minLength": 2,
+                  "maxLength": 50
+                },
+                "framework": {
+                  "type": "string",
+                  "minLength": 2,
+                  "maxLength": 50
+                },
+                "apiDesign": {
+                  "type": "string",
+                  "enum": ["REST", "GraphQL", "gRPC", "WebSocket"]
+                }
+              },
+              "additionalProperties": false
+            },
+            "database": {
+              "type": "object",
+              "properties": {
+                "primary": {
+                  "type": "string",
+                  "minLength": 2,
+                  "maxLength": 50
+                },
+                "caching": {
+                  "type": "string",
+                  "minLength": 2,
+                  "maxLength": 50
+                },
+                "search": {
+                  "type": "string",
+                  "minLength": 2,
+                  "maxLength": 50
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "integrations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 2,
+                "maxLength": 100
+              },
+              "type": {
+                "type": "string",
+                "enum": ["API", "Webhook", "Message Queue", "Database", "File Transfer"]
+              },
+              "protocol": {
+                "type": "string",
+                "minLength": 2,
+                "maxLength": 50
+              },
+              "authentication": {
+                "type": "string",
+                "minLength": 2,
+                "maxLength": 100
+              }
+            },
+            "required": ["name", "type", "protocol"],
+            "additionalProperties": false
+          },
+          "maxItems": 20
+        }
+      },
+      "additionalProperties": false
+    },
+    "riskAssessment": {
+      "type": "object",
+      "properties": {
+        "technicalRisks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string",
+                "minLength": 5,
+                "maxLength": 100
+              },
+              "impact": {
+                "type": "string",
+                "enum": ["Low", "Medium", "High", "Critical"]
+              },
+              "probability": {
+                "type": "string",
+                "enum": ["Low", "Medium", "High"]
+              },
+              "mitigation": {
+                "type": "string",
+                "minLength": 10,
+                "maxLength": 500
+              },
+              "owner": {
+                "type": "string",
+                "minLength": 2,
+                "maxLength": 100
+              }
+            },
+            "required": ["title", "impact", "probability", "mitigation"],
+            "additionalProperties": false
+          },
+          "maxItems": 20
+        },
+        "businessRisks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string",
+                "minLength": 5,
+                "maxLength": 100
+              },
+              "impact": {
+                "type": "string",
+                "enum": ["Low", "Medium", "High", "Critical"]
+              },
+              "probability": {
+                "type": "string",
+                "enum": ["Low", "Medium", "High"]
+              },
+              "mitigation": {
+                "type": "string",
+                "minLength": 10,
+                "maxLength": 500
+              },
+              "owner": {
+                "type": "string",
+                "minLength": 2,
+                "maxLength": 100
+              }
+            },
+            "required": ["title", "impact", "probability", "mitigation"],
+            "additionalProperties": false
+          },
+          "maxItems": 20
+        },
+        "securityRisks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string",
+                "minLength": 5,
+                "maxLength": 100
+              },
+              "cvssScore": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 10
+              },
+              "attackVector": {
+                "type": "string",
+                "minLength": 5,
+                "maxLength": 200
+              },
+              "mitigation": {
+                "type": "string",
+                "minLength": 10,
+                "maxLength": 500
+              },
+              "timeline": {
+                "type": "string",
+                "format": "date"
+              }
+            },
+            "required": ["title", "attackVector", "mitigation"],
+            "additionalProperties": false
+          },
+          "maxItems": 20
+        }
+      },
+      "additionalProperties": false
+    },
+    "implementationPlan": {
+      "type": "object",
+      "properties": {
+        "phases": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "phaseNumber": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "name": {
+                "type": "string",
+                "minLength": 5,
+                "maxLength": 100
+              },
+              "duration": {
+                "type": "string",
+                "pattern": "^\\d+\\s(weeks?|months?)$"
+              },
+              "teamSize": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 100
+              },
+              "deliverables": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 5,
+                  "maxLength": 200
+                },
+                "minItems": 1,
+                "maxItems": 20
+              },
+              "successCriteria": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 5,
+                  "maxLength": 200
+                },
+                "minItems": 1,
+                "maxItems": 10
+              }
+            },
+            "required": ["phaseNumber", "name", "duration", "deliverables"],
+            "additionalProperties": false
+          },
+          "minItems": 1,
+          "maxItems": 10
+        },
+        "milestones": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "date": {
+                "type": "string",
+                "format": "date"
+              },
+              "milestone": {
+                "type": "string",
+                "minLength": 5,
+                "maxLength": 200
+              },
+              "phase": {
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "required": ["date", "milestone"],
+            "additionalProperties": false
+          },
+          "maxItems": 50
+        },
+        "resourceRequirements": {
+          "type": "object",
+          "properties": {
+            "developmentTeam": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            },
+            "qaTeam": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 50
+            },
+            "devopsTeam": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 20
+            },
+            "budget": {
+              "type": "string",
+              "pattern": "^[\\$€£]?\\d{1,9}(\\.[\\d]{2})?[KkMmBbTt]?$"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "required": ["phases"],
+      "additionalProperties": false
+    },
+    "successMetrics": {
+      "type": "object",
+      "properties": {
+        "businessMetrics": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 3,
+                "maxLength": 100
+              },
+              "target": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 50
+              },
+              "baseline": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 50
+              },
+              "measurementMethod": {
+                "type": "string",
+                "minLength": 5,
+                "maxLength": 200
+              }
+            },
+            "required": ["name", "target"],
+            "additionalProperties": false
+          },
+          "maxItems": 20
+        },
+        "technicalMetrics": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 3,
+                "maxLength": 100
+              },
+              "target": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 50
+              },
+              "current": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 50
+              }
+            },
+            "required": ["name", "target"],
+            "additionalProperties": false
+          },
+          "maxItems": 20
+        },
+        "userExperienceMetrics": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 3,
+                "maxLength": 100
+              },
+              "target": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 50
+              }
+            },
+            "required": ["name", "target"],
+            "additionalProperties": false
+          },
+          "maxItems": 15
+        }
+      },
+      "additionalProperties": false
+    },
+    "generatedFiles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "filename": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9._-]+\\.[a-zA-Z]{2,5}$"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["prd", "adr", "ddd", "c4", "technical-spec", "security-assessment"]
+          },
+          "size": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "hash": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          }
+        },
+        "required": ["filename", "type", "size", "hash", "path"],
+        "additionalProperties": false
+      },
+      "maxItems": 50
+    }
+  },
+  "required": [
+    "metadata",
+    "executiveSummary",
+    "productVision",
+    "userResearch",
+    "functionalRequirements",
+    "implementationPlan"
+  ],
+  "additionalProperties": false
+}
